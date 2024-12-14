@@ -7,7 +7,7 @@ class Parser:
         self.parser = argparse.ArgumentParser(description="Traceroute")
         self.parser.add_argument("-t", "--timeout", type=int, default=2, help="таймаут ожидания ответа (по умолчанию 2 с)")
         self.parser.add_argument("-p", "--port", type=int, help="порт (для tcp или udp)")
-        self.parser.add_argument("-n", "--num", type=int, default=20, help="максимальное количество запросов")
+        self.parser.add_argument("-n", "--num", type=int, help="максимальное количество запросов")
         self.parser.add_argument("-v", "--verbose", action='store_true', default=False,
                                  help="вывод номера автономной системы для каждого ip-адреса")
         self.parser.add_argument("IP_ADDRESS", help="ip адрес")
