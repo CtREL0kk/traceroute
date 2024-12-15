@@ -4,6 +4,8 @@ from scapy.layers.inet import IP, ICMP, UDP, TCP
 from scapy.layers.inet6 import IPv6
 from scapy.sendrecv import sr1
 import time
+
+from asn import ASN_Finder
 from formater import Formater
 
 from protocols import ProtocolType
@@ -35,7 +37,7 @@ class RouteTracer:
                 else:
                     packet = IPv6(dst=self.ip_address, hlim=ttl) / protocol
             except socket.gaierror:
-                raise ValueError(f"Cannot resolve host {self.ip_address}")
+                raise ValueError(f"Неверный ip-адрес {self.ip_address}")
 
             start_time = time.perf_counter()
             data = sr1(packet, verbose=0, timeout=self.timeout)
@@ -46,7 +48,13 @@ class RouteTracer:
                 continue
 
             received_addr = data.src
-            Formater.format_without_number(ttl, received_addr, round((finish_time - start_time)*1000))
+            if not self.verbose:
+                Formater.format_without_number(ttl, received_addr, round((finish_time - start_time)*1000))
+            else:
+                asn = ASN_Finder().get_asn(received_addr)
+                if not asn:
+                    asn = "-"
+                Formater.format_with_number(ttl, received_addr, round((finish_time - start_time)*1000), asn)
             if received_addr == self.ip_address:
                 break
 
